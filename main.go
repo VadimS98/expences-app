@@ -3,13 +3,29 @@ package main
 import (
 	"expenses-app/cli"
 	"expenses-app/models"
+	"expenses-app/storage"
 	"fmt"
 	"strconv"
 )
 
 var expenses []models.Expense
 
+const dataFile = "expenses.json"
+
 func main() {
+	var err error
+	expenses, err = storage.LoadExpensesFromFile(dataFile)
+	if err != nil {
+		fmt.Println("Error loading data:", err)
+		return
+	}
+
+	defer func() {
+		if err := storage.SaveExpensesToFile(expenses, dataFile); err != nil {
+			fmt.Println("Error saving data:", err)
+		}
+	}()
+
 	for {
 		cli.ShowMenu()
 		choice := cli.GetUserInput("Choose an option: ")
@@ -58,7 +74,7 @@ func listExpenses() {
 func showTotalExpenses() {
 	total := 0.0
 	for _, expense := range expenses {
-		total += expense.Amount
+		total += expense.Price * expense.Amount
 	}
 
 	fmt.Printf("Total Expenses: $%.2f\n", total)
