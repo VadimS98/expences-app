@@ -47,16 +47,59 @@ func main() {
 }
 
 func addExpense() {
+	// Get user input for description
 	description := cli.GetUserInput("Enter description: ")
-	category := cli.GetUserInput("Enter category: ")
-	priceStr := cli.GetUserInput("Enter price: ")
-	price, _ := strconv.ParseFloat(priceStr, 64)
-	amountStr := cli.GetUserInput("Enter amount: ")
-	amount, _ := strconv.ParseFloat(amountStr, 64)
 
-	expense := models.Expense{Price: price, Amount: amount, Category: category, Description: description}
+	// Get user input for category with validation using models.Categories
+	category := getValidCategory()
+
+	// Get user input for price with validation
+	price := getValidFloatInput("Enter price: ")
+
+	// Get user input for amount with validation
+	amount := getValidFloatInput("Enter amount: ")
+
+	// Create and append the expense
+	expense := models.Expense{
+		Price:       price,
+		Amount:      amount,
+		Category:    category,
+		Description: description,
+	}
 	expenses = append(expenses, expense)
 	fmt.Println("Expense added!")
+}
+
+// Helper function to validate category input using models.Categories
+func getValidCategory() string {
+	for {
+		fmt.Println("Available categories:")
+		for _, cat := range models.Categories {
+			fmt.Println("-", cat)
+		}
+
+		category := cli.GetUserInput("Choose a category: ")
+		for _, cat := range models.Categories {
+			if category == cat {
+				return category
+			}
+		}
+
+		fmt.Println("Invalid category. Please choose from the list.")
+	}
+}
+
+// Helper function to validate float input (e.g., price, amount)
+func getValidFloatInput(prompt string) float64 {
+	for {
+		input := cli.GetUserInput(prompt)
+		value, err := strconv.ParseFloat(input, 64)
+		if err != nil || value < 0 {
+			fmt.Println("Invalid input. Please enter a positive number.")
+			continue
+		}
+		return value
+	}
 }
 
 func listExpenses() {
