@@ -1,15 +1,16 @@
 name: Go Tests
 
-# Trigger the workflow on push or pull request events
 on:
   push:
     branches:
-      - main  # Run tests on pushes to the main branch
-  pull_request: # Run tests on pull requests to any branch
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
-    runs-on: ubuntu-latest # Use an Ubuntu environment for testing
+    runs-on: ubuntu-latest
 
     steps:
       # Step 1: Check out the repository code
@@ -20,8 +21,12 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: 1.20 # Replace with your Go version if different
+          go-version: '1.24'
 
-      # Step 3: Run tests
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: go mod tidy
+
+      # Step 4: Run tests
       - name: Run tests
         run: go test ./... -v
