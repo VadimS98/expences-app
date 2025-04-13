@@ -2,16 +2,16 @@ package cmd
 
 import (
 	"expenses-app/cli"
+	"expenses-app/internal"
 	"expenses-app/models"
 	"fmt"
-	"strconv"
 )
 
 func AddExpense(expenses *[]models.Expense) {
 	description := cli.GetUserInput("Enter description: ")
 	category := cli.GetCategoryMenu()
-	price := getValidFloatInput("Enter price: ")
-	amount := getValidFloatInput("Enter amount: ")
+	price := internal.GetValidFloatInput("Enter price: ")
+	amount := internal.GetValidFloatInput("Enter amount: ")
 
 	expense := models.Expense{
 		Description: description,
@@ -22,16 +22,4 @@ func AddExpense(expenses *[]models.Expense) {
 
 	*expenses = append(*expenses, expense)
 	fmt.Println("Expense added!")
-}
-
-func getValidFloatInput(prompt string) float64 {
-	for {
-		input := cli.GetUserInput(prompt)
-		value, err := strconv.ParseFloat(input, 64)
-		if err != nil || value < 0 {
-			fmt.Println("Invalid input. Please enter a positive number.")
-			continue
-		}
-		return value
-	}
 }
