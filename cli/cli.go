@@ -23,25 +23,23 @@ func GetUserInput(prompt string) string {
 	return strings.TrimSpace(input)
 }
 
-// GetCategoryInput prompts the user to choose a category from the available list
-func GetCategoryInput() string {
+// GetCategoryMenu displays a numbered list of categories and allows the user to select one
+func GetCategoryMenu() string {
 	fmt.Println("Available categories:")
-	for _, category := range models.Categories {
-		fmt.Println("-", category)
+	for i, category := range models.Categories {
+		fmt.Printf("%d) %s\n", i+1, category)
 	}
 
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Choose a category: ")
-	input, _ := reader.ReadString('\n')
-	input = strings.TrimSpace(input)
-
-	// Validate input against available categories
-	for _, category := range models.Categories {
-		if input == category {
-			return input
+	var choice int
+	for {
+		fmt.Print("Enter the number corresponding to your choice: ")
+		_, err := fmt.Scan(&choice)
+		if err != nil || choice < 1 || choice > len(models.Categories) {
+			fmt.Println("Invalid input. Please try again.")
+			continue
 		}
+		break
 	}
 
-	fmt.Println("Invalid category. Please choose from the list.")
-	return GetCategoryInput() // Retry on invalid input
+	return models.Categories[choice-1]
 }

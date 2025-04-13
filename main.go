@@ -50,8 +50,8 @@ func addExpense() {
 	// Get user input for description
 	description := cli.GetUserInput("Enter description: ")
 
-	// Get user input for category with validation using models.Categories
-	category := getValidCategory()
+	// Get user input for category using the menu system
+	category := cli.GetCategoryMenu()
 
 	// Get user input for price with validation
 	price := getValidFloatInput("Enter price: ")
@@ -68,25 +68,6 @@ func addExpense() {
 	}
 	expenses = append(expenses, expense)
 	fmt.Println("Expense added!")
-}
-
-// Helper function to validate category input using models.Categories
-func getValidCategory() string {
-	for {
-		fmt.Println("Available categories:")
-		for _, cat := range models.Categories {
-			fmt.Println("-", cat)
-		}
-
-		category := cli.GetUserInput("Choose a category: ")
-		for _, cat := range models.Categories {
-			if category == cat {
-				return category
-			}
-		}
-
-		fmt.Println("Invalid category. Please choose from the list.")
-	}
 }
 
 // Helper function to validate float input (e.g., price, amount)
